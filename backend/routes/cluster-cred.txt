@@ -1,0 +1,4 @@
+uname: mohanvenkat1708
+pwd: jYysHebg0JWNgOFK
+
+connection url: mongodb+srv://mohanvenkat1708:jYysHebg0JWNgOFK@cluster0.apnje.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
