@@ -1,0 +1,83 @@
+/* Login.css */
+
+.login-page {  /* Parent class for all styles specific to the login page */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(to right, #41b0ff, #2bdfff);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+  }
+  
+  .login-card {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    max-width: 300px;
+    width: 80%;
+    text-align: center;
+  }
+  
+  .login-card h2 {
+    color: #333;
+    margin-bottom: 1.5rem;
+  }
+  
+  .login-form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .login-input {
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+  }
+  
+  .login-input:focus {
+    border-color: #ffa041;
+    outline: none;
+  }
+  
+  .login-button {
+    padding: 0.75rem;
+    border: none;
+    border-radius: 8px;
+    background-color: #ffa041;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .login-button:hover {
+    background-color: #ffa041;
+  }
+  
+  .login-message {
+    margin-top: 1rem;
+    color: #ffa041;
+    font-weight: bold;
+  }
+  
+  .login-link {
+    margin-top: 1.5rem;
+    font-size: 0.9rem;
+    color: #333;
+  }
+  
+  .login-link a {
+    color: #ff4b2b;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  
+  .login-link a:hover {
+    text-decoration: underline;
+  }
+  

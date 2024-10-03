@@ -8,7 +8,17 @@ const AdminReports = () => {
     useEffect(() => {
         const fetchReports = async () => {
             try {
-                const response = await axios.get('http://localhost:5000/api/reports');
+                // Retrieve token from localStorage
+                const token = localStorage.getItem('authToken');
+
+                // Fetch reports with authorization token
+                const response = await axios.get('http://localhost:5000/api/reports', {
+                    headers: {
+                        'Authorization': `Bearer ${token}` // Include token in request header
+                    }
+                });
+
+                // Set reports data to state
                 setReports(response.data);
             } catch (error) {
                 console.error('Error fetching reports:', error);

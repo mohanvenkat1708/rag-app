@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './Chat.css'; // Import the CSS file
+import { jwtDecode } from 'jwt-decode';
+
+import './Chat.css'; 
 
 const Chat = () => {
     const [messages, setMessages] = useState([]);
@@ -9,14 +11,34 @@ const Chat = () => {
     const [reporting, setReporting] = useState(null);
     const [reportText, setReportText] = useState('');
     const [showReportForm, setShowReportForm] = useState(false);
+    const [user, setUser] = useState(null); // State to store decoded user info
 
     useEffect(() => {
+        
         const fetchMessages = async () => {
             try {
-                const response = await axios.get('http://localhost:5000/api/messages');
+                const token = localStorage.getItem('authToken');
+                console.log(token+"Sorry !");
+                if (token) {
+                    // Decode user information from token
+                    const decodedUser = jwtDecode(token).username;
+                    console.log("Okay!");
+                    console.log(decodedUser+"LOL");
+                    setUser(decodedUser); // Set user info in state
+                }
+
+                // Fetch messages with authorization token
+                const response = await axios.get('http://localhost:5000/api/messages', {
+                    headers: {
+                        'Authorization': `Bearer ${token}` // Ensure correct syntax
+                    }
+                });
                 setMessages(response.data);
             } catch (error) {
                 console.error('Error fetching messages:', error);
+                if (error.response) {
+                    console.error('Error response data:', error.response.data);
+                }
             }
         };
 
@@ -37,18 +59,38 @@ const Chat = () => {
     };
 
     const sendMessage = async () => {
-        if (input.trim() === '') return; // Do nothing if input is empty
+        if (input.trim() === '') return;
 
         try {
-            const response = await axios.post('http://localhost:5000/api/messages', {
-                user: 'User1', // Example user
-                message: input,
-                timestamp: new Date().toISOString()
-            });
-            console.log('Message sent successfully:', response.data);
+            const token = localStorage.getItem('authToken');
+            console.log(token+"hi!");
+            // Send message with authorization token
+            const response = await axios.post(
+                'http://localhost:5000/api/messages',
+                {
+                    user: user, // Use decoded username from token
+                    username: "NO user",
+                    message: input,
+                    timestamp: new Date().toISOString(),
+                    sessionId: token,
+                    //username: "No user"
+                },
+                {
+                    headers: {
+                        'Authorization': `Bearer ${token}` // Ensure correct syntax
+                    }
+                }
+            );
 
+            console.log('Message sent successfully:', response.data);
             setInput('');
-            const messagesResponse = await axios.get('http://localhost:5000/api/messages');
+            
+            // Fetch messages again to update the list
+            const messagesResponse = await axios.get('http://localhost:5000/api/messages', {
+                headers: {
+                    'Authorization': `Bearer ${token}` // Ensure correct syntax
+                }
+            });
             setMessages(messagesResponse.data);
         } catch (error) {
             console.error('Error sending message:', error);
@@ -72,14 +114,26 @@ const Chat = () => {
     };
 
     const submitReport = async () => {
-        if (!reportText.trim()) return; // Do nothing if report text is empty
+        if (!reportText.trim()) return;
 
         try {
-            await axios.post('http://localhost:5000/api/report', {
-                messageId: reporting,
-                userId: 'User1', // Example user ID
-                reportText
-            });
+            const token = localStorage.getItem('authToken');
+
+            // Send report with authorization token and user ID from decoded token
+            await axios.post(
+                'http://localhost:5000/api/reporting',
+                {
+                    messageId: reporting,
+                    userId: user.id, // Use user ID from decoded token
+                    reportText
+                },
+                {
+                    headers: {
+                        'Authorization': `Bearer ${token}` // Ensure correct syntax
+                    }
+                }
+            );
+
             console.log('Report submitted successfully');
             setReportText('');
             setShowReportForm(false);
@@ -101,7 +155,7 @@ const Chat = () => {
                 {messages.map((msg, index) => (
                     <div
                         key={index}
-                        className={`message ${msg.user === 'User1' ? 'user1' : 'user2'}`}
+                        className={`message ${msg.user === user?.username ? 'user1' : 'user2'}`}
                     >
                         <strong>{msg.user}</strong>: {msg.message}
                         <span className="timestamp">{formatTimestamp(msg.timestamp)}</span>

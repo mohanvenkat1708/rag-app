@@ -1,0 +1,6 @@
+POST http://localhost:8080/ai
+Content-Type: application/json
+
+{
+    "query": "Who is the president of South Africa?"
+}
